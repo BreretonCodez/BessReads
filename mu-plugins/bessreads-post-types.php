@@ -35,9 +35,12 @@ function bessreads_post_types() {
 		'supports' => array(
 			'title',
 			'excerpt',
-			'author'
+			'author',
+            'category'
 		),
 		'has_archive' => true,
 		'rewrite' => array('slug' => 'reviews')
     ));
 }
+
+add_action('init','bessreads_post_types');
