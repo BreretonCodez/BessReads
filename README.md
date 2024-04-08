@@ -26,4 +26,4 @@ Interactive Feature:
 
 "Q&A Corner": where readers can submit questions to authors, fostering direct engagement and dialogue between writers and their audience.
 
-WordPress Theme: 
+WordPress Theme: GeneratePress [![GeneratePress]](https://generatepress.com/)
