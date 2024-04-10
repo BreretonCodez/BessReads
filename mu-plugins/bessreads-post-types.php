@@ -14,9 +14,15 @@ function bessreads_post_types() {
 		),
 		'supports' => array(
 			'title',
+			'summary',
 			'thumbnail',
 			'excerpt',
-            'author'
+            'author',
+			'custom-fields',
+			'comments',
+		),
+		'taxonomies' => array(
+			'category',
 		),
 		'has_archive' => true,
 		'rewrite' => array('slug' => 'books')
@@ -36,7 +42,8 @@ function bessreads_post_types() {
 			'title',
 			'excerpt',
 			'author',
-            'category'
+            'custom-fields',
+			'page-attributes',
 		),
 		'has_archive' => true,
 		'rewrite' => array('slug' => 'reviews')
