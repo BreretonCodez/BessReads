@@ -27,6 +27,8 @@ get_header();
                                         $book_man_id = get_post_meta(get_the_ID(), 'book_manuscript', true);
                                         $book_url = wp_get_attachment_url($book_man_id);
 
+                                        echo do_shortcode('[ratemypost]');
+
                                     if(is_user_logged_in()) {
                                     ?>
                                     <div class="btn btn-primary">
@@ -36,7 +38,40 @@ get_header();
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <br>
+                            <h2>Reviews from our Readers: </h2>
+                            <?php
+                                $current_book_id = get_the_ID();
 
+                                $reviews = new WP_Query(array(
+                                    'post_type' => 'review',
+                                    'posts_per_page' => -1,
+                                    'meta_query' => array(
+                                        array(
+                                            'key' => 'book_reviewed',
+                                            'value' => $current_book_id,
+                                            'compare' => 'LIKE',
+                                        )
+                                    ),
+                                ));
+
+                                if ($reviews->have_posts()) :
+                                    while ($reviews->have_posts()) : $reviews->the_post();
+                                        $tweet_url = get_field('tweet_url');
+
+                                        if ($tweet_url) {
+                                            echo '<div class="embedded-tweet">';
+                                            echo $tweet_url;
+                                            echo '</div><br>';
+                                        }
+                                    endwhile;
+                                    wp_reset_postdata();
+                                else :
+                                    echo '<p>No reviews found for this book.</p>';
+                                endif;
+                            ?>
+                        </div>
                         <div class="book-description">
                             <?php the_content(); ?>
                         </div>
