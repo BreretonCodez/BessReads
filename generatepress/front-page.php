@@ -81,9 +81,10 @@ get_header();
                 $author_image_url = wp_get_attachment_url($author_image_id);
                 $author_bio = get_post_meta(get_the_ID(), 'author_bio', true);
                 $accolade = get_post_meta(get_the_ID(), 'author_accolade', true);
+                $bio = wp_trim_words($author_bio, 30, '');
                 ?>
 
-                <div class="spotlight-content card secondary">
+                <div class="spotlight-content card bg-warning-subtle">
                     <div class="row mt-4 mb-4 justify-content-center">
                         <div class="col"></div>
                         <div class="col-md-3">
@@ -97,8 +98,9 @@ get_header();
                                 <h3><a class="text-black" href="<?php echo esc_url($author_url); ?>"><?php echo esc_html($author_name); ?></a></h3>
                             <?php endif; ?>
                             <?php if ($author_bio) : ?>
-                                <p><?php echo esc_html($author_bio); ?></p>
+                                <p><?php echo esc_html($bio); ?></p>
                             <?php endif; ?>
+                            <div class="btn btn-primary"><a class="text-white" href="<?php the_permalink(); ?>">Read More</a></div>
                         </div>
                         <div class="col"></div>
                     </div>
@@ -131,7 +133,7 @@ get_header();
                     foreach ($categories as $category) {
                         echo '<div class="col-md-4">';
                         echo '<div class="card mb-3">';
-                        echo '<div class="card-body text-center">';
+                        echo '<div class="card-body text-center bg-success-subtle">';
                         echo '<h5 class="card-title"><a class="text-black" href="' . esc_url(get_category_link($category->term_id)) . '">' . $category->name . '</a></h5>';
                         echo '</div>';
                         echo '</div>';
