@@ -121,3 +121,76 @@ require $theme_dir . '/inc/structure/navigation.php';
 require $theme_dir . '/inc/structure/post-meta.php';
 require $theme_dir . '/inc/structure/sidebars.php';
 require $theme_dir . '/inc/structure/search-modal.php';
+
+function enqueue_bootstrap() {
+	wp_enqueue_style('bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css');
+}
+
+function custom_admin_headings($wp_admin_bar) {
+	$book = array(
+		'id' => 'book-heading',
+		'title'=> 'My Books',
+		'href' => '#',
+		'meta' => array(
+			'class' => 'book-heading',
+			'title' => 'My Books',
+		),
+		'priority' => 9998,
+	);
+
+	$review = array(
+		'id' => 'review-heading',
+		'title'=> 'Reviews',
+		'href' => '#',
+		'meta' => array(
+			'class' => 'review-heading',
+			'title' => 'Reviews',
+		),
+		'priority' => 9999,
+	);
+
+	$wp_admin_bar->add_node($book);
+	$wp_admin_bar->add_node($review);
+
+	$wp_admin_bar->add_menu(array(
+		'parent' => 'book-heading',
+		'id'=> 'book-menu-1',
+		'title'=> 'My Books',
+		'href' => 'http://testreads.local/wp-admin/edit.php?post_type=book'
+	));
+
+	$wp_admin_bar->add_menu(array(
+		'parent' => 'review-heading',
+		'id'=> 'review-menu-1',
+		'title'=> 'My Review List',
+		'href' => '#'
+	));
+
+	$wp_admin_bar->add_menu(array(
+		'parent' => 'review-heading',
+		'id'=> 'review-menu-2',
+		'title'=> 'My Reviews',
+		'href' => 'http://testreads.local/wp-admin/edit.php?post_type=review'
+	));
+
+}
+
+function modify_category_query($query) {
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if ($query->is_category()) {
+        $query->set('post_type', 'book');
+    }
+}
+
+add_action('wp_enqueue_scripts', 'enqueue_bootstrap');
+add_action('admin_bar_menu', 'custom_admin_headings', 999);
+add_action('after_setup_theme','custom_image_sizes');
+add_action('pre_get_posts', 'modify_category_query');
+
+function custom_image_sizes() {
+	add_image_size('home-thumbnail', 150, 200, true);
+	add_image_size('disp-thumbnail', 200, 350, true);
+}

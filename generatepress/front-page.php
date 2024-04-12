@@ -14,7 +14,7 @@ get_header();
             ));
             if ($latest_books->have_posts()) :
                 while ($latest_books->have_posts()) : $latest_books->the_post(); ?>
-                    <div class="col sm-2 book">
+                    <div class="col-sm-2 book">
                         <a href="<?php the_permalink(); ?>">
                             <img class="img-fluid rounded" src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'home-thumbnail')); ?>" alt="<?php the_title(); ?>">
                         </a>
@@ -34,13 +34,19 @@ get_header();
             $pop_books = new WP_Query(array(
                 'post_type' => 'book',
                 'posts_per_page' => 6,
-                'orderby' => 'avgRating',
+                'meta_key' => 'rmp_avg_rating',
+                'orderby' => 'meta_value_num',
                 'order' => 'DESC',
-
+                'meta_query' => array(
+                    array(
+                        'key' => 'rmp_avg_rating',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
             ));
             if ($pop_books->have_posts()) :
                 while ($pop_books->have_posts()) : $pop_books->the_post(); ?>
-                    <div class="col sm-2 book">
+                    <div class="col-sm-2 book">
                         <a href="<?php the_permalink(); ?>">
                             <img class="img-fluid rounded" src="<?php echo esc_url(get_the_post_thumbnail_url(get_the_ID(), 'home-thumbnail')); ?>" alt="<?php the_title(); ?>">
                         </a>
@@ -51,7 +57,62 @@ get_header();
             endif;
             wp_reset_postdata();
             ?>
-        <!-- Add other sections for Popular Books, Book Genres, etc. -->
+    </div>
+    <br>
+    <div class="author-spotlight">
+        <h1>Author Spotlight</h1>
+        <hr>
+
+        <?php
+        // Query to retrieve the latest spotlight post
+        $spotlight_query = new WP_Query(array(
+            'post_type' => 'spotlight',
+            'posts_per_page' => 1, // Show only one spotlight post
+            'order' => 'DESC',
+            'orderby' => 'date',
+        ));
+
+        if ($spotlight_query->have_posts()) :
+            while ($spotlight_query->have_posts()) : $spotlight_query->the_post();
+                // Retrieve custom fields data
+                $author_name = get_post_meta(get_the_ID(), 'author_name', true);
+                $author_url = get_post_meta(get_the_ID(), 'author_link', true);
+                $author_image_id = get_post_meta(get_the_ID(), 'author_image', true);
+                $author_image_url = wp_get_attachment_url($author_image_id);
+                $author_bio = get_post_meta(get_the_ID(), 'author_bio', true);
+                $accolade = get_post_meta(get_the_ID(), 'author_accolade', true);
+                ?>
+
+                <div class="spotlight-content card secondary">
+                    <div class="row mt-4 mb-4 justify-content-center">
+                        <div class="col"></div>
+                        <div class="col-md-3">
+                            <?php if ($author_image_url) : ?>
+                                <img class="img-fluid rounded-circle" src="<?php echo esc_url($author_image_url); ?>" alt="<?php echo esc_attr($author_name); ?>">
+                            <?php endif; ?>
+                        </div>
+                        <div class="col-md-3">
+                            <h6><?php echo esc_html($accolade); ?></h6>
+                            <?php if ($author_name) : ?>
+                                <h3><a class="text-black" href="<?php echo esc_url($author_url); ?>"><?php echo esc_html($author_name); ?></a></h3>
+                            <?php endif; ?>
+                            <?php if ($author_bio) : ?>
+                                <p><?php echo esc_html($author_bio); ?></p>
+                            <?php endif; ?>
+                        </div>
+                        <div class="col"></div>
+                    </div>
+                    
+
+                    
+                </div>
+
+            <?php endwhile;
+            wp_reset_postdata(); // Reset post data query
+        else :
+            echo '<p>No spotlight posts found.</p>';
+        endif;
+        ?>
     </div>
     <br>
     <div class="row">
@@ -62,8 +123,8 @@ get_header();
             <div class="row">
                 <?php
                 $categories = get_categories(array(
-                    'taxonomy' => 'category', // Replace 'category' with the name of your taxonomy if it's different
-                    'hide_empty' => false, // Show categories with no posts
+                    'taxonomy' => 'category',
+                    'hide_empty' => false,
                 ));
 
                 if ($categories) {
@@ -71,7 +132,7 @@ get_header();
                         echo '<div class="col-md-4">';
                         echo '<div class="card mb-3">';
                         echo '<div class="card-body text-center">';
-                        echo '<h5 class="card-title"><a href="' . esc_url(get_category_link($category->term_id)) . '">' . $category->name . '</a></h5>';
+                        echo '<h5 class="card-title"><a class="text-black" href="' . esc_url(get_category_link($category->term_id)) . '">' . $category->name . '</a></h5>';
                         echo '</div>';
                         echo '</div>';
                         echo '</div>';
@@ -83,6 +144,7 @@ get_header();
             </div>
         </div>
     </div>
+    <br>
 </div>
 
 <?php get_footer(); ?>

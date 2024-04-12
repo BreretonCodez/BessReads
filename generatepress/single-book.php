@@ -19,11 +19,20 @@ get_header();
                             <div class="col-md-6">
                                 <div class="book-info">
                                     <h1 class="entry-title"><strong><?php the_title(); ?></strong></h1>
-                                    <h3><a href="<?php echo esc_url(get_author_posts_url(get_the_author_meta('ID'))); ?>"><?php the_author(); ?></a></h3>
+                                    <h3><a class="text-black" href="<?php echo esc_url(get_author_posts_url(get_the_author_meta('ID'))); ?>"><?php the_author(); ?></a></h3>
                                     <br>
                                     <p> <?php echo get_the_excerpt();  ?> </p>
-                                    <p><strong>Genres:</strong> <?php echo get_the_category_list(', '); ?></p>
-                                    <!-- Add more fields as needed -->
+                                    <p><strong class="text-black">Genres: </strong><?php echo get_the_category_list(', '); ?></p>
+                                    <?php 
+                                        $book_man_id = get_post_meta(get_the_ID(), 'book_manuscript', true);
+                                        $book_url = wp_get_attachment_url($book_man_id);
+
+                                    if(is_user_logged_in()) {
+                                    ?>
+                                    <div class="btn btn-primary">
+                                        <a class="text-white" href="<?php echo esc_url($book_url); ?>">Download Sample</a>
+                                    </div>
+                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -31,22 +40,22 @@ get_header();
                         <div class="book-description">
                             <?php the_content(); ?>
                         </div>
-                    </div><!-- .entry-content -->
-
+                    </div>
+                    <br class="mt-4">
                     <footer class="entry-footer">
+                        <h2>Q&A Corner</h2>
                         <?php
-                        // If comments are open or we have at least one comment, load up the comment template.
                         if (comments_open() || get_comments_number()) :
                             comments_template();
                         endif;
                         ?>
-                    </footer><!-- .entry-footer -->
-                </article><!-- #post-<?php the_ID(); ?> -->
+                    </footer>
+                </article>
 
-            <?php endwhile; // End of the loop. ?>
+            <?php endwhile; ?>
 
-        </main><!-- #main -->
-    </div><!-- #primary -->
+        </main>
+    </div>
         
 </main>
 <?php
